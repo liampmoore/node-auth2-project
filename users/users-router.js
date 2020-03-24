@@ -11,4 +11,18 @@ router.get('/', restricted, (req, res) => {
     .catch(err => res.send(err));
 });
 
+router.get("/department", restricted, (req, res) => {
+  Users.findBy({department: req.body.department})
+    .then(users => {
+      if (users.length === 0) {
+        res.status(404).json({message: "No users in specified department."})
+      }
+      else {
+      res.status(200).json(users)
+
+      }
+    })
+    .catch(err => res.status(500).json({error: "Server error, could not get users."}))
+})
+
 module.exports = router;
