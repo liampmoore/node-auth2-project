@@ -5,6 +5,11 @@ const jwt = require("jsonwebtoken");
 const Users = require('../users/users-model.js');
 
 // for endpoints beginning with /api/auth
+
+router.get('/' , (req, res) => {
+  res.status(200).send('Auth router is up.')
+})
+
 router.post('/register', (req, res) => {
   let user = req.body;
   const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
@@ -12,7 +17,7 @@ router.post('/register', (req, res) => {
 
   Users.add(user)
     .then(saved => {
-      res.status(201).json(saved);
+      res.status(201).json({message: `Successfully created user '${saved.username}' in department '${saved.department}'.`});
     })
     .catch(error => {
       res.status(500).json(error);
@@ -46,6 +51,7 @@ function generateToken(user) {
   const payload = {
     sub: user.id,
     username: user.username,
+    department: user.department
   }
   const secret = require("../config/secrets").jwtSecret;
   const options = {
