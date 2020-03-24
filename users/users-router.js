@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const Users = require('./users-model.js');
 const restricted = require('../auth/restricted-middleware.js');
+const getUser = require('../auth/getUser-middleware');
 
 router.get('/', restricted, (req, res) => {
   Users.find()
@@ -11,9 +12,9 @@ router.get('/', restricted, (req, res) => {
     .catch(err => res.send(err));
 });
 
-router.get("/department", restricted, (req, res) => {
-
-  Users.findBy({department: req.decodedToken.department})
+router.get("/department", restricted, getUser, (req, res) => {
+  const department = req.user.department;
+  Users.findBy({department})
     .then(users => {
       if (users.length === 0) {
         res.status(404).json({message: "No users in specified department."})

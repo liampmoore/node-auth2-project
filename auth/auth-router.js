@@ -50,8 +50,7 @@ router.post('/login', (req, res) => {
 function generateToken(user) {
   const payload = {
     sub: user.id,
-    username: user.username,
-    department: user.department
+    username: user.username
   }
   const secret = require("../config/secrets").jwtSecret;
   const options = {
